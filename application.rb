@@ -6,6 +6,11 @@ require 'dotenv/load'
 require 'pp'
 require 'sinatra/activerecord'
 
+require_relative 'models/slack/payload.rb'
+require_relative 'models/slack/url_verification.rb'
+require_relative 'models/slack/message.rb'
+require_relative 'models/taco.rb'
+
 class Application < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
@@ -19,15 +24,14 @@ class Application < Sinatra::Base
       return
     end
 
-    if payload.dig("type") == "url_verification"
-      puts "Accepting challenge."
-      payload["challenge"]
-    elsif payload.dig("event", "type") == "reaction_added" && payload.dig("event", "reaction") == "bomb"
-      puts "About to blow!"
-      BombWorker.perform_async(payload)
+    if event.is_a?(Slack::UrlVerification)
+      # https://api.slack.com/events/url_verification
+      event.challenge
+    elsif event.is_a?(Slack::Message) && event.gives_tacos?
+      event.assign_tacos
     else
-      puts "Not a bomb"
-      "Not a bomb."
+      puts "We don't know what this is"
+      "We don't know what this is"
     end
   end
 
@@ -40,16 +44,21 @@ class Application < Sinatra::Base
       @slack_conn ||= Faraday.new(url: 'https://slack.com')
     end
 
-    def payload
-      @payload ||= JSON.parse(request.body.read)
+    def request_body
+      # Reading the body destroys it, apparently.
+      @request_body ||= request.body.read
+    end
+
+    def event
+      @event ||= Slack::Payload.new(request_body).event
     end
 
     def slack_event_verified?
-      payload["token"] == ENV["SLACK_VERIFICATION_TOKEN"]
+      JSON.parse(request_body)["token"] == ENV["SLACK_VERIFICATION_TOKEN"]
     end
 
     def log_request_body
-      puts payload if params[:verbose_request] == "true"
+      puts request_body if params[:verbose_request] == "true"
     end
   end
 end
