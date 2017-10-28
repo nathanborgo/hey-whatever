@@ -9,6 +9,10 @@ require 'sinatra/activerecord'
 class Application < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
+  before do
+    log_request_body
+  end
+
   post '/slack_api/v1/events' do
     if !slack_event_verified?
       status 401
@@ -42,6 +46,10 @@ class Application < Sinatra::Base
 
     def slack_event_verified?
       payload["token"] == ENV["SLACK_VERIFICATION_TOKEN"]
+    end
+
+    def log_request_body
+      puts payload if params[:verbose_request] == "true"
     end
   end
 end
