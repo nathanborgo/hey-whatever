@@ -1,0 +1,6 @@
+development:
+  adapter: postgresql
+  database: hey_whatever_development
+  username: <%= ENV['POSTGRES_USERNAME'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: localhost
