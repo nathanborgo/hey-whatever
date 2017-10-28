@@ -9,7 +9,6 @@ module Slack
     end
 
     def assign_tacos
-      binding.pry
       recipient_ids.each do |recipient_id|
         Taco.create(
          giver_id: author_id,
