@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20171028223746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "slack_authorizations", force: :cascade do |t|
+  create_table "slack_authorizations", id: :serial, force: :cascade do |t|
     t.string "team_id"
     t.string "team_name"
     t.string "user_id"

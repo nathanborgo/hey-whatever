@@ -9,13 +9,15 @@ module Slack
     end
 
     def assign_tacos
-      recipient_ids.each do |recipient_id|
-        Taco.create(
-         giver_id: author_id,
-         recipient_id: recipient_id,
-         original_text: text,
-         channel_id: channel_id,
-        )
+      taco_count.times do
+        recipient_ids.each do |recipient_id|
+          Taco.create(
+            giver_id: author_id,
+            recipient_id: recipient_id,
+            original_text: text,
+            channel_id: channel_id,
+          )
+        end
       end
     end
 

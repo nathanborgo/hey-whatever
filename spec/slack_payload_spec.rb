@@ -3,7 +3,11 @@ require_relative 'spec_helper.rb'
 describe Slack::Payload do
   describe "#initialize" do
     it "should initialize a URL verification event" do
-      request = '{"token": "xxx","challenge": "yyTY5cemXZrxEVPsWIBlgkMnKcoYpbSMEkZdwJ45dP9GR5QXDiXc","type": "url_verification"}'
+      request = '{
+        "token": "xxx",
+        "challenge": "yyTY5cemXZrxEVPsWIBlgkMnKcoYpbSMEkZdwJ45dP9GR5QXDiXc",
+        "type": "url_verification"
+      }'
       payload = Slack::Payload.new(request)
 
       payload.event.class.must_equal Slack::UrlVerification
