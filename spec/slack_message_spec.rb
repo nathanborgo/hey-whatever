@@ -2,6 +2,7 @@ require_relative 'spec_helper.rb'
 
 describe Slack::Message do
   before do
+    # Whatever.
     Taco.destroy_all
   end
 
@@ -117,6 +118,13 @@ describe Slack::Message do
         }
       }'))
       event.assign_tacos
+
+      taco = Taco.find_by(giver_id: "U3LADN8LA")
+
+      Taco.count.must_equal 1
+      taco.giver_id.must_equal "U3LADN8LA"
+      taco.recipient_id.must_equal "U3LADN8LB"
+      taco.original_text.must_equal "<@U3LADN8LB> testing self :taco: message"
     end
 
     it "assigns 2 tacos to 1 person" do
@@ -131,6 +139,15 @@ describe Slack::Message do
         }
       }'))
       event.assign_tacos
+
+      tacos = Taco.where(recipient_id: "U3LADN8LB")
+
+      Taco.count.must_equal 2
+      tacos.count.must_equal 2
+      tacos.each do |taco|
+        taco.giver_id.must_equal "U3LADN8LA"
+        taco.original_text.must_equal "<@U3LADN8LB> :taco: :taco:"
+      end
     end
 
     it "assigns 1 taco to 2 people" do
@@ -145,6 +162,17 @@ describe Slack::Message do
         }
       }'))
       event.assign_tacos
+
+      taco_b = Taco.find_by(recipient_id: "U3LADN8LB")
+      taco_c = Taco.find_by(recipient_id: "U3LADN8LC")
+
+      Taco.count.must_equal 2
+      taco_b.present?.must_equal true
+      taco_b.giver_id.must_equal "U3LADN8LA"
+      taco_b.original_text.must_equal "<@U3LADN8LB> <@U3LADN8LC> :taco:"
+      taco_c.present?.must_equal true
+      taco_c.giver_id.must_equal "U3LADN8LA"
+      taco_c.original_text.must_equal "<@U3LADN8LB> <@U3LADN8LC> :taco:"
     end
 
     it "assigned 2 tacos to 2 people" do
@@ -159,6 +187,18 @@ describe Slack::Message do
         }
       }'))
       event.assign_tacos
+
+      tacos_b = Taco.where(recipient_id: "U3LADN8LB")
+      tacos_c = Taco.where(recipient_id: "U3LADN8LC")
+
+      Taco.count.must_equal 4
+      [tacos_b, tacos_c].each do |tacos|
+        tacos.count.must_equal 2
+        tacos.each do |taco|
+          taco.giver_id.must_equal "U3LADN8LA"
+          taco.original_text.must_equal "<@U3LADN8LB> <@U3LADN8LC> :taco: :taco:"
+        end
+      end
     end
   end
 end
