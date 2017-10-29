@@ -10,3 +10,7 @@ gem 'pry'
 gem 'activerecord'
 gem 'pg'
 gem 'rake'
+
+group :test, :development do
+  gem 'rack-test', require: 'rack/test'
+end
