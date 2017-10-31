@@ -5,6 +5,7 @@ require 'pry'
 require 'dotenv/load'
 require 'pp'
 require 'sinatra/activerecord'
+require 'date'
 
 require_relative 'models/slack/payload.rb'
 require_relative 'models/slack/url_verification.rb'

@@ -1,11 +1,13 @@
 module Slack
   class Message
-    attr_reader :author_id, :text, :channel_id
+    attr_reader :author_id, :text, :channel_id, :message_id, :given_at
 
     def initialize(request)
       @author_id = request.dig("event", "user")
       @text = request.dig("event", "text")
       @channel_id = request.dig("event", "channel")
+      @message_id = request.dig("event_id")
+      @given_at = request.dig("event", "event_ts")
     end
 
     def assign_tacos
@@ -16,6 +18,8 @@ module Slack
             recipient_id: recipient_id,
             original_text: text,
             channel_id: channel_id,
+            message_id: message_id,
+            given_at: given_at,
           )
         end
       end
