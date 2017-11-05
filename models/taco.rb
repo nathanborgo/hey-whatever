@@ -34,7 +34,9 @@ class Taco < ActiveRecord::Base
   end
 
   def create_user
-    User.where(slack_id: recipient_id).first_or_create(display_name: "User #{rand(100)}")
+    response = Faraday.new(url: 'https://slack.com').get("/api/users.info?token=#{ENV['SLACK_BOT_ACCESS_TOKEN']}&user=#{recipient_id}")
+    name = JSON.parse(response.body).dig("user", "profile", "real_name")
+    User.where(slack_id: recipient_id).first_or_create(display_name: name)
   end
 
 end
