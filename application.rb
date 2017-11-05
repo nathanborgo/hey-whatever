@@ -40,7 +40,7 @@ class Application < Sinatra::Base
   end
 
   get '/' do
-    @users = User.all
+    @users = User.order(tacos_count: :desc)
     erb :leaderboard
   end
 
