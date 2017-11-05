@@ -11,9 +11,10 @@ module Slack
     end
 
     def assign_tacos
+      tacos = []
       taco_count.times do
         recipient_ids.each do |recipient_id|
-          Taco.create(
+          tacos << Taco.create(
             giver_id: author_id,
             recipient_id: recipient_id,
             original_text: text,
@@ -23,6 +24,7 @@ module Slack
           )
         end
       end
+      return tacos
     end
 
     def gives_tacos?

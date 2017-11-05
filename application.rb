@@ -11,6 +11,7 @@ require_relative 'models/slack/payload.rb'
 require_relative 'models/slack/url_verification.rb'
 require_relative 'models/slack/message.rb'
 require_relative 'models/taco.rb'
+require_relative 'models/user.rb'
 
 class Application < Sinatra::Base
   register Sinatra::ActiveRecordExtension
@@ -29,11 +30,17 @@ class Application < Sinatra::Base
       # https://api.slack.com/events/url_verification
       event.challenge
     elsif event.is_a?(Slack::Message) && event.gives_tacos?
-      event.assign_tacos
+      tacos = event.assign_tacos
+      status tacos.count > 0 ? 204 : 400
     else
       puts "We don't know what this is"
       "We don't know what this is"
     end
+  end
+
+  get '/' do
+    erb :leaderboard
+
   end
 
   after do

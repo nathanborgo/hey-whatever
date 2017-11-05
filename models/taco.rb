@@ -2,6 +2,8 @@ class Taco < ActiveRecord::Base
   validate :users_cannot_give_to_themselves
   validate :users_cannot_give_more_than_five
 
+  after_create :create_user
+
   before_validation :set_created_at, on: :create
   before_validation :set_updated_at, on: :update
 
@@ -30,4 +32,9 @@ class Taco < ActiveRecord::Base
   def set_updated_at
     self.updated_at = DateTime.now
   end
+
+  def create_user
+    User.where(slack_id: recipient_id).first_or_create(display_name: "User #{rand(100)}")
+  end
+
 end

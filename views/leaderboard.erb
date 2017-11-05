@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Taco Count</th>
+      </tr>
+      <% User.all.each do |user| %>
+        <tr>
+          <td><%= user.display_name %></td>
+          <td><%= user.taco_count %></td>
+        </tr>
+      <% end %>
+    </table>
+  </body>
+</html>
