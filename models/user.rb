@@ -1,7 +1,3 @@
 class User < ActiveRecord::Base
-
-  def taco_count
-    Taco.where(recipient_id: slack_id).count
-  end
-
+  has_many :tacos, primary_key: :slack_id, foreign_key: :recipient_id
 end

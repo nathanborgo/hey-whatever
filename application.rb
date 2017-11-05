@@ -30,8 +30,9 @@ class Application < Sinatra::Base
       # https://api.slack.com/events/url_verification
       event.challenge
     elsif event.is_a?(Slack::Message) && event.gives_tacos?
-      tacos = event.assign_tacos
-      status tacos.count > 0 ? 204 : 400
+      event.find_or_create_users
+      event.assign_tacos
+      status 202
     else
       puts "We don't know what this is"
       "We don't know what this is"
@@ -39,8 +40,8 @@ class Application < Sinatra::Base
   end
 
   get '/' do
+    @users = User.all
     erb :leaderboard
-
   end
 
   after do
