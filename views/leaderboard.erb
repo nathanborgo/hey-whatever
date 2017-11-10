@@ -1,16 +1,109 @@
 <html>
+  <head>
+    <style>
+html {
+  background: linear-gradient(90deg, #36404A 75%, #ef4555 25%);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.main-header {
+  color: #666;
+  font-size: 60px;
+  font-weight: bold;
+  line-height: 1;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.container {
+  background-color: #fff;
+  border-radius: 10px;
+  margin: 100px auto;
+  padding: 30px;
+  width: 350px;
+}
+
+.the-rest {
+  margin-top: 20px;
+}
+
+.entry {
+  border: 1px solid #eee;
+  border-width: 0px 1px 1px;
+  color: #666;
+  overflow: auto;
+  padding: 20px 25px;
+}
+
+.entry:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-width: 1px;
+}
+
+.entry:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.name {
+  float: left;
+  width: 70%;
+}
+
+.rank {
+  color: #ccc;
+  font-size: 12px;
+  margin-right: 7px;
+}
+
+.count {
+  color: #ef4555;
+  float: right;
+  font-weight: bold;
+  text-align: right;
+  width: 30%;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: normal;
+}
+    </style>
+  </head>
   <body>
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Taco Count</th>
-      </tr>
-      <% @users.each do |user| %>
-        <tr>
-          <td><%= user.display_name %></td>
-          <td><%= user.tacos_count %></td>
-        </tr>
+    <div class="container">
+      <div class="main-header">🌮</div>
+      <div class="entries">
+        <% @users[0..9].each_with_index do |user, i| %>
+          <div class="entry">
+            <div class="name">
+              <span class="rank"><%= i + 1 %></span>
+              <%= user.display_name %>
+            </div>
+            <div class="count">
+              <%= user.tacos_count %>
+              <span class="label">tacos</span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <% if @users.count > 10 %>
+        <div class="entries the-rest">
+          <% @users[10..-1].each_with_index do |user, i| %>
+            <div class="entry">
+              <div class="name">
+                <span class="rank"><%= i + 1 %></span>
+                <%= user.display_name %>
+              </div>
+              <div class="count">
+                <%= user.tacos_count %>
+                <span class="label">tacos</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
       <% end %>
-    </table>
+    </div>
   </body>
 </html>
