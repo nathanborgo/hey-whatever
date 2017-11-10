@@ -1,11 +1,13 @@
 require 'sinatra/base'
+require 'sinatra/activerecord'
+require "sinatra/cookies"
 require 'json'
 require 'faraday'
 require 'pry'
 require 'dotenv/load'
 require 'pp'
-require 'sinatra/activerecord'
 require 'date'
+require 'bcrypt'
 
 require_relative 'models/slack/payload.rb'
 require_relative 'models/slack/url_verification.rb'
@@ -13,14 +15,16 @@ require_relative 'models/slack/message.rb'
 require_relative 'models/taco.rb'
 require_relative 'models/user.rb'
 
+
 class Application < Sinatra::Base
   register Sinatra::ActiveRecordExtension
+  helpers Sinatra::Cookies
 
   before do
     log_request_body
   end
 
-  post '/slack_api/v1/events' do
+  post "/slack_api/v1/events" do
     if !slack_event_verified?
       status 401
       return
@@ -39,9 +43,20 @@ class Application < Sinatra::Base
     end
   end
 
-  get '/' do
-    @users = User.order(tacos_count: :desc)
-    erb :leaderboard
+  post "/authorize" do
+    cookies[:authorization_key] = BCrypt::Password.create(params[:secret_word])
+    redirect '/'
+  end
+
+  get "/" do
+    password = Rack::Utils.unescape(cookies[:authorization_key] || "")
+
+    if password != "" && BCrypt::Password.new(password) == ENV["AUTHORIZATION_KEY"]
+      @users = User.order(tacos_count: :desc)
+      erb :leaderboard
+    else
+      erb :authorization
+    end
   end
 
   after do
@@ -50,7 +65,7 @@ class Application < Sinatra::Base
 
   helpers do
     def slack_conn
-      @slack_conn ||= Faraday.new(url: 'https://slack.com')
+      @slack_conn ||= Faraday.new(url: "https://slack.com")
     end
 
     def request_body
