@@ -83,7 +83,7 @@ html {
             </div>
             <div class="count">
               <%= user.tacos_count %>
-              <span class="label">tacos</span>
+              <span class="label"><%= pluralize(user.tacos_count, 'taco') %></span>
             </div>
           </div>
         <% end %>
@@ -98,7 +98,7 @@ html {
               </div>
               <div class="count">
                 <%= user.tacos_count %>
-                <span class="label">tacos</span>
+                <span class="label"><%= pluralize(user.tacos_count, 'taco') %></span>
               </div>
             </div>
           <% end %>

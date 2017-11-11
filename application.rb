@@ -84,5 +84,10 @@ class Application < Sinatra::Base
     def log_request_body
       puts request_body if params[:verbose_request] == "true"
     end
+
+    def pluralize(number, text)
+      number.to_i == 1 ? text : text.pluralize
+    end
+
   end
 end
