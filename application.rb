@@ -44,7 +44,9 @@ class Application < Sinatra::Base
   end
 
   post "/slack_api/v1/commands" do
-    "This is a test response."
+    {
+      text: "This is a JSON text test response."
+    }.to_json
   end
 
   post "/authorize" do
