@@ -44,7 +44,7 @@ class Application < Sinatra::Base
   end
 
   post "/slack_api/v1/commands" do
-
+    "This is a test response."
   end
 
   post "/authorize" do
