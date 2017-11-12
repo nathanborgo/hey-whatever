@@ -43,6 +43,10 @@ class Application < Sinatra::Base
     end
   end
 
+  post "/slack_api/v1/commands" do
+
+  end
+
   post "/authorize" do
     cookies[:authorization_key] = BCrypt::Password.create(params[:secret_word])
     redirect '/'
