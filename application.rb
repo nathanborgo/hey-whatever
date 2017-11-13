@@ -53,10 +53,14 @@ class Application < Sinatra::Base
 
     current_user = User.find_by(slack_id: params["user_id"])
     today_taco_count = current_user.given_tacos.created_today.count
+    leaderboard = []
+    users = User.order(tacos_count: :desc).limit(10).each_with_index do |u, i|
+      leaderboard << "#{i+1}. #{u.display_name}: #{u.tacos_count} tacos"
+    end
 
     {
       response_type: "ephemeral",
-      text: "You have *#{current_user.tacos_count} tacos total* and *#{5 - today_taco_count} tacos left* to give out today."
+      text: "*Top Ten*\n#{leaderboard.join("\n")}\n\nYou have *#{current_user.tacos_count} tacos total* and *#{5 - today_taco_count} tacos left* to give out today."
     }.to_json
   end
 
