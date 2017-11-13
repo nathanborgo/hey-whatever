@@ -44,11 +44,19 @@ class Application < Sinatra::Base
   end
 
   post "/slack_api/v1/commands" do
+    if !slack_event_verified?
+      status 401
+      return
+    end
+
     content_type :json
+
+    current_user = User.find_by(slack_id: params["user_id"])
+    today_taco_count = current_user.tacos.created_today.count
 
     {
       response_type: "ephemeral",
-      text: "This is a JSON text test response."
+      text: "You have *#{current_user.tacos_count} tacos total* and *#{5 - today_taco_count} tacos left* to give out today."
     }.to_json
   end
 
@@ -87,7 +95,8 @@ class Application < Sinatra::Base
     end
 
     def slack_event_verified?
-      JSON.parse(request_body)["token"] == ENV["SLACK_VERIFICATION_TOKEN"]
+      token = params["token"] || JSON.parse(request_body)["token"]
+      token == ENV["SLACK_VERIFICATION_TOKEN"]
     end
 
     def log_request_body
