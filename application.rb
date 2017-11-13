@@ -52,7 +52,7 @@ class Application < Sinatra::Base
     content_type :json
 
     current_user = User.find_by(slack_id: params["user_id"])
-    today_taco_count = current_user.tacos.created_today.count
+    today_taco_count = current_user.given_tacos.created_today.count
 
     {
       response_type: "ephemeral",
