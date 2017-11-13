@@ -56,7 +56,7 @@ class Application < Sinatra::Base
       leaderboard << "#{i+1}. #{u.display_name}: #{u.tacos_count} tacos"
     end
 
-    "*Top ten*\n#{leaderboard.join("\n")}\n<http://www.suptaco.com|View more...>\n\nYou have *#{current_user.tacos_count} tacos total* and *#{5 - today_taco_count} tacos left* to give out today."
+    "*Leaderboard*\n#{leaderboard.join("\n")}\n<http://www.suptaco.com|View more...>\n\nYou have *#{current_user.tacos_count} tacos total* and *#{5 - today_taco_count} tacos left* to give out today."
   end
 
   post "/authorize" do
