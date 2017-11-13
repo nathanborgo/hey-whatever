@@ -44,7 +44,10 @@ class Application < Sinatra::Base
   end
 
   post "/slack_api/v1/commands" do
+    content_type :json
+
     {
+      response_type: "ephemeral",
       text: "This is a JSON text test response."
     }.to_json
   end
