@@ -1,6 +1,12 @@
 class Taco < ActiveRecord::Base
   belongs_to :user, primary_key: :slack_id, foreign_key: :recipient_id, counter_cache: true
 
+  validates :giver_id, presence: true
+  validates :recipient_id, presence: true
+  validates :channel_id, presence: true
+  validates :message_id, presence: true
+  validates :given_at, presence: true
+
   validate :users_cannot_give_to_themselves
   validate :users_cannot_give_more_than_five
 
@@ -14,6 +20,8 @@ class Taco < ActiveRecord::Base
   end
 
   def users_cannot_give_to_themselves
+    return if !giver_id || !recipient_id
+
     if giver_id == recipient_id
       errors.add(:base, "You can't give yourself tacos.")
     end

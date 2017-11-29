@@ -1,6 +1,7 @@
 require 'rack/test'
 require 'rspec'
 require 'database_cleaner'
+require 'factory_bot'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -24,10 +25,12 @@ end
 
 RSpec.configure do |config|
   config.include RSpecMixin
+  config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+    FactoryBot.find_definitions
   end
 
   config.around(:each) do |example|
