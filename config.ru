@@ -1,5 +1,6 @@
 require 'rubygems'
-require File.join(File.dirname(__FILE__), 'application.rb')
+require './application'
+
 run Application
 
 $stdout.sync = true

@@ -15,4 +15,6 @@ gem 'bcrypt'
 
 group :test, :development do
   gem 'rack-test', require: 'rack/test'
+  gem 'rspec'
+  gem 'database_cleaner'
 end

@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
-require "sinatra/cookies"
+require 'sinatra/cookies'
 require 'json'
 require 'faraday'
 require 'pry'
@@ -37,9 +37,18 @@ class Application < Sinatra::Base
       event.find_or_create_users
       event.assign_tacos
       status 202
+    elsif event.is_a?(Slack::Message)
+      status 200
+      {
+        message: "Ignoring non-recognition message.",
+        code: "rgej392"
+      }.to_json
     else
-      puts "We don't know what this is"
-      "We don't know what this is"
+      status 200
+      {
+        message: "Ignoring unknown event.",
+        code: "e0hwu4d"
+      }
     end
   end
 
