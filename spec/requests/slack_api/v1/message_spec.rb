@@ -38,9 +38,8 @@ describe "Slack API v1 Events" do
     
     expect(taco.giver_id).to eq("U7RD3CCF6")
     expect(taco.recipient_id).to eq("U3LADN8LA")
-    expect(taco.channel_id).to eq("C7RCLE8LT")
-    expect(taco.message_id).to eq("Ev7SCD1VK8")
-    expect(taco.given_at).to eq(1509223537.00001)
+    expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+    expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
   end
 
   it "rewards tagged user with multiple tacos" do
@@ -51,9 +50,8 @@ describe "Slack API v1 Events" do
     Taco.all.each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.recipient_id).to eq("U3LADN8LA")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
   end
 
@@ -64,15 +62,13 @@ describe "Slack API v1 Events" do
 
     bill_taco = Taco.find_by(recipient_id: "U50LQDP6F")
     expect(bill_taco.giver_id).to eq("U7RD3CCF6")
-    expect(bill_taco.channel_id).to eq("C7RCLE8LT")
-    expect(bill_taco.message_id).to eq("Ev7SCD1VK8")
-    expect(bill_taco.given_at).to eq(1509223537.00001)
+    expect(bill_taco.message.channel.slack_id).to eq("C7RCLE8LT")
+    expect(bill_taco.message.ts).to be_within(0.001).of(1509223537.000008)
 
     frank_taco = Taco.find_by(recipient_id: "U7Q98PDEV")
     expect(frank_taco.giver_id).to eq("U7RD3CCF6")
-    expect(frank_taco.channel_id).to eq("C7RCLE8LT")
-    expect(frank_taco.message_id).to eq("Ev7SCD1VK8")
-    expect(frank_taco.given_at).to eq(1509223537.00001)
+    expect(frank_taco.message.channel.slack_id).to eq("C7RCLE8LT")
+    expect(frank_taco.message.ts).to be_within(0.001).of(1509223537.000008)
   end
 
   it "rewards multiple tagged users with multiple tacos" do
@@ -82,16 +78,14 @@ describe "Slack API v1 Events" do
 
     Taco.where(recipient_id: "U50LQDP6F").each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
 
     Taco.where(recipient_id: "U7Q98PDEV").each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
   end
 
@@ -103,9 +97,8 @@ describe "Slack API v1 Events" do
     Taco.all.each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.recipient_id).to eq("U3LADN8LA")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
   end
 
@@ -118,18 +111,16 @@ describe "Slack API v1 Events" do
     expect(bill_tacos.count).to eq(3)
     bill_tacos.each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
 
     frank_tacos = Taco.where(recipient_id: "U7Q98PDEV")
     expect(frank_tacos.count).to eq(2)
     frank_tacos.each do |taco|
       expect(taco.giver_id).to eq("U7RD3CCF6")
-      expect(taco.channel_id).to eq("C7RCLE8LT")
-      expect(taco.message_id).to eq("Ev7SCD1VK8")
-      expect(taco.given_at).to eq(1509223537.00001)
+      expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+      expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
     end
   end
 
@@ -147,6 +138,20 @@ describe "Slack API v1 Events" do
     expect(taco.recipient.slack_id).to eq("U3LADN8LA")
     expect(taco.recipient.display_name).to eq("Nathan Borgo")
     expect(taco.recipient.tacos_count).to eq(1)
+  end
+
+  it "creates and assigns message objects from a slack message" do
+    expect {
+      post "/slack_api/v1/events", message_event(text: "<@U3LADN8LA> :taco: for being good.")
+    }.to change{Taco.count}.from(0).to(1)
+
+    taco = Taco.last
+
+    expect(taco.message.user.slack_id).to eq("U7RD3CCF6")
+    expect(taco.message.channel.slack_id).to eq("C7RCLE8LT")
+    expect(taco.message.ts).to be_within(0.001).of(1509223537.000008)
+    expect(taco.message.text).to eq("<@U3LADN8LA> :taco: for being good.")
+    # expect(taco.message.permalink).to eq()
   end
 end
 

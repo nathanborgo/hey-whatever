@@ -14,6 +14,8 @@ require_relative 'models/slack/url_verification.rb'
 require_relative 'models/slack/message.rb'
 require_relative 'models/taco.rb'
 require_relative 'models/user.rb'
+require_relative 'models/message.rb'
+require_relative 'models/channel.rb'
 
 
 class Application < Sinatra::Base

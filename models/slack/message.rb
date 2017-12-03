@@ -1,13 +1,13 @@
 module Slack
   class Message
-    attr_reader :author_id, :text, :channel_id, :message_id, :given_at
+    attr_reader :author_id, :text, :channel_id, :message_id, :event_ts
 
     def initialize(request)
       @author_id = request.dig("event", "user")
       @text = request.dig("event", "text")
       @channel_id = request.dig("event", "channel")
       @message_id = request.dig("event_id")
-      @given_at = request.dig("event", "event_ts")
+      @event_ts = request.dig("event", "event_ts")
     end
 
     def assign_tacos
@@ -17,10 +17,7 @@ module Slack
           tacos << Taco.create(
             giver_id: author_id,
             recipient_id: recipient_id,
-            original_text: text,
-            channel_id: channel_id,
-            message_id: message_id,
-            given_at: given_at,
+            message_id: message.id
           )
         end
       end
@@ -47,6 +44,18 @@ module Slack
     end
 
     private
+
+    def message
+      ::Message.where(channel_id: channel.id, ts: event_ts).first_or_create(text: text, user_id: author.id)
+    end
+
+    def author
+      User.find_by(slack_id: author_id)
+    end
+
+    def channel
+      Channel.where(slack_id: channel_id).first_or_create()
+    end
 
     def involved_slack_ids
       [author_id] + recipient_ids

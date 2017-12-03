@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171105174046) do
+ActiveRecord::Schema.define(version: 20171203224344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "channels", force: :cascade do |t|
+    t.string "slack_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "channel_id"
+    t.float "ts"
+    t.text "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "slack_authorizations", force: :cascade do |t|
     t.string "team_id"
@@ -27,12 +42,9 @@ ActiveRecord::Schema.define(version: 20171105174046) do
   create_table "tacos", force: :cascade do |t|
     t.string "giver_id"
     t.string "recipient_id"
-    t.string "original_text"
-    t.string "channel_id"
-    t.string "message_id"
-    t.float "given_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "message_id"
   end
 
   create_table "users", force: :cascade do |t|
