@@ -1,6 +1,9 @@
 class Taco < ActiveRecord::Base
   belongs_to :user, primary_key: :slack_id, foreign_key: :recipient_id, counter_cache: true
 
+  belongs_to :recipient, primary_key: :slack_id, foreign_key: :recipient_id, class_name: "User"
+  belongs_to :giver, primary_key: :slack_id, foreign_key: :giver_id, class_name: "User"
+
   validates :giver_id, presence: true
   validates :recipient_id, presence: true
   validates :channel_id, presence: true

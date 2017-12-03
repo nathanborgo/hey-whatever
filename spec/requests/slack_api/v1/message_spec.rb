@@ -36,7 +36,7 @@ describe "Slack API v1 Events" do
 
     taco = Taco.last
     
-    expect(taco.giver_id).to eq("U3LADN8LD")
+    expect(taco.giver_id).to eq("U7RD3CCF6")
     expect(taco.recipient_id).to eq("U3LADN8LA")
     expect(taco.channel_id).to eq("C7RCLE8LT")
     expect(taco.message_id).to eq("Ev7SCD1VK8")
@@ -49,7 +49,7 @@ describe "Slack API v1 Events" do
     }.to change{Taco.count}.from(0).to(3)
 
     Taco.all.each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.recipient_id).to eq("U3LADN8LA")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
@@ -63,13 +63,13 @@ describe "Slack API v1 Events" do
     }.to change{Taco.count}.from(0).to(2)
 
     bill_taco = Taco.find_by(recipient_id: "U50LQDP6F")
-    expect(bill_taco.giver_id).to eq("U3LADN8LD")
+    expect(bill_taco.giver_id).to eq("U7RD3CCF6")
     expect(bill_taco.channel_id).to eq("C7RCLE8LT")
     expect(bill_taco.message_id).to eq("Ev7SCD1VK8")
     expect(bill_taco.given_at).to eq(1509223537.00001)
 
     frank_taco = Taco.find_by(recipient_id: "U7Q98PDEV")
-    expect(frank_taco.giver_id).to eq("U3LADN8LD")
+    expect(frank_taco.giver_id).to eq("U7RD3CCF6")
     expect(frank_taco.channel_id).to eq("C7RCLE8LT")
     expect(frank_taco.message_id).to eq("Ev7SCD1VK8")
     expect(frank_taco.given_at).to eq(1509223537.00001)
@@ -81,14 +81,14 @@ describe "Slack API v1 Events" do
     }.to change{Taco.count}.from(0).to(4)
 
     Taco.where(recipient_id: "U50LQDP6F").each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
       expect(taco.given_at).to eq(1509223537.00001)
     end
 
     Taco.where(recipient_id: "U7Q98PDEV").each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
       expect(taco.given_at).to eq(1509223537.00001)
@@ -101,7 +101,7 @@ describe "Slack API v1 Events" do
     }.to change{Taco.count}.from(0).to(5)
 
     Taco.all.each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.recipient_id).to eq("U3LADN8LA")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
@@ -117,7 +117,7 @@ describe "Slack API v1 Events" do
     bill_tacos = Taco.where(recipient_id: "U50LQDP6F")
     expect(bill_tacos.count).to eq(3)
     bill_tacos.each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
       expect(taco.given_at).to eq(1509223537.00001)
@@ -126,31 +126,28 @@ describe "Slack API v1 Events" do
     frank_tacos = Taco.where(recipient_id: "U7Q98PDEV")
     expect(frank_tacos.count).to eq(2)
     frank_tacos.each do |taco|
-      expect(taco.giver_id).to eq("U3LADN8LD")
+      expect(taco.giver_id).to eq("U7RD3CCF6")
       expect(taco.channel_id).to eq("C7RCLE8LT")
       expect(taco.message_id).to eq("Ev7SCD1VK8")
       expect(taco.given_at).to eq(1509223537.00001)
     end
   end
+
+  it "creates and assigns respective users from a message" do
+    expect {
+      post "/slack_api/v1/events", message_event(text: "<@U3LADN8LA> :taco: for being good.")
+    }.to change{Taco.count}.from(0).to(1)
+
+    taco = Taco.last
+
+    expect(taco.giver.slack_id).to eq("U7RD3CCF6")
+    expect(taco.giver.display_name).to eq("Molly")
+    expect(taco.giver.tacos_count).to eq(0)
+
+    expect(taco.recipient.slack_id).to eq("U3LADN8LA")
+    expect(taco.recipient.display_name).to eq("Nathan Borgo")
+    expect(taco.recipient.tacos_count).to eq(1)
+  end
 end
 
-def message_event(text:)
-  {
-    token: "mock_token",
-    team_id: "T3KKUHYNM",
-    api_app_id: "A7RS13PLP",
-    type: "event_callback",
-    event_id: "Ev7SCD1VK8",
-    event_time: "1509223537",
-    authed_users: ["U3LADN8LD"],
-    event: {
-      type: "message",
-      user: "U3LADN8LD",
-      text: text,
-      ts: "1509223537.000008",
-      channel: "C7RCLE8LT",
-      event_ts: "1509223537.000008"
-    }
-  }.to_json
-end
 

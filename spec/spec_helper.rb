@@ -6,6 +6,7 @@ require 'factory_bot'
 ENV['RACK_ENV'] = 'test'
 
 require_relative '../application.rb'
+require_relative './helpers/slack_request_helper.rb'
 
 module RSpecMixin
   include Rack::Test::Methods
@@ -26,6 +27,7 @@ end
 RSpec.configure do |config|
   config.include RSpecMixin
   config.include FactoryBot::Syntax::Methods
+  config.include SlackRequestHelper
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
