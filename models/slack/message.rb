@@ -46,6 +46,12 @@ module Slack
       recipient_ids.count > 0 && taco_count > 0
     end
 
+    def gives_tacos?
+      recipient_ids.count > 0 &&
+      taco_count > 0 &&
+      ENV["WHITELISTED_CHANNELS"].split(",").include?(channel_id)
+    end
+    
     private
 
     def involved_slack_ids
